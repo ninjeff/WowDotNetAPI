@@ -20,6 +20,16 @@ namespace WowDotNetAPI.Explorers
 		private readonly string region;
 		private readonly JavaScriptSerializer serializer;
 
+		public static RealmExplorer Create(string region)
+		{
+			return new RealmExplorer(region, new JsonSource(), new JavaScriptSerializer());
+		}
+
+		public static RealmExplorer CreateWithProxy(string region, string proxyUser, string proxyPassword, string proxyUrl)
+		{
+			return new RealmExplorer(region, new ProxyJsonSource(proxyUser, proxyPassword, proxyUrl), new JavaScriptSerializer());
+		}
+
 		public RealmExplorer(IJsonSource jsonSource) : this("us", jsonSource, new JavaScriptSerializer()) { }
 
 		public RealmExplorer(string region, IJsonSource jsonSource) : this(region, jsonSource, new JavaScriptSerializer()) { }
@@ -75,7 +85,7 @@ namespace WowDotNetAPI.Explorers
 			return realmList;
 		}
 
-		public RealmList GetRealmsByQueue(bool queue) 
+		public RealmList GetRealmsByQueue(bool queue)
 		{
 			RealmList realmList = this.GetRealmData(string.Format(baseRealmAPIurl, region, string.Empty));
 			if (queue)
